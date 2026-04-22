@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About — Ishiraa</title>
+  <meta name="description" content="Ishiraa is a small studio working with weavers and embroiderers across India. Slow fashion, made with intent.">
+  <meta name="theme-color" content="#fbf8f4">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='68' font-family='serif' font-size='64' text-anchor='middle' fill='%238b6f47'%3EI%3C/text%3E%3C/svg%3E">
+  <meta property="og:title" content="About — Ishiraa">
+  <meta property="og:description" content="A small studio working with weavers and embroiderers across India.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div data-site-header></div>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Our Story</span>
+        <h1>A slower wardrobe, built with care.</h1>
+        <p>Ishiraa began with a simple wish — to design clothing that felt like heirloom pieces, not fast trends.</p>
+      </div>
+
+      <div class="split">
+        <div class="split__media">
+          <img src="https://images.unsplash.com/photo-1605086843820-d1f35aaf2d2e?auto=format&fit=crop&w=900&q=70" alt="Artisan weaving cloth on a handloom">
+        </div>
+        <div>
+          <h2>Craft, first.</h2>
+          <p>Each Ishiraa piece begins at a loom — sometimes in Benaras, sometimes in a quiet village in Madhya Pradesh. We work closely with master weavers, paying fair wages and giving the craft the time it deserves. The fabrics are then cut, stitched, and finished in our Bengaluru studio.</p>
+          <p>We only work in small batches. If a style sells out, it often means waiting a few weeks while the next run comes off the loom. We think that's worth it.</p>
+        </div>
+      </div>
+
+      <div class="split" style="margin-top:4rem">
+        <div>
+          <h2>Natural fabrics.</h2>
+          <p>Chanderi silk, handloom linen, mulmul cotton, khadi, tussar — each chosen for how it drapes, breathes, and ages. We avoid synthetics wherever possible and share the exact fabric composition on every product.</p>
+          <p>Our dyeing partners use low-impact and natural dyes. Pieces will fade over the years the way linen shirts and old jeans do — gracefully.</p>
+        </div>
+        <div class="split__media">
+          <img src="https://images.unsplash.com/photo-1591005930828-7d3a1937d1df?auto=format&fit=crop&w=900&q=70" alt="Folded stack of natural-dyed fabrics">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container text-center">
+      <span class="eyebrow">Questions?</span>
+      <h2>Chat with us on WhatsApp.</h2>
+      <p>We love helping you find the right piece — sizing, fabric, styling, customisations.</p>
+      <a class="btn btn--wa" id="waBtn" href="#" target="_blank" rel="noopener">Start a conversation</a>
+    </div>
+  </section>
+
+  <div data-site-footer></div>
+
+  <script src="config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/whatsapp.js"></script>
+  <script>
+    document.getElementById('waBtn').href = IshiraaWA.generalLink();
+  </script>
+</body>
+</html>
