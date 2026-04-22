@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shop — Ishiraa</title>
+  <meta name="description" content="Browse the full Ishiraa collection. Filter by category, size, colour, and price. Buy via WhatsApp.">
+  <meta name="theme-color" content="#fbf8f4">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='68' font-family='serif' font-size='64' text-anchor='middle' fill='%238b6f47'%3EI%3C/text%3E%3C/svg%3E">
+  <meta property="og:title" content="Shop — Ishiraa">
+  <meta property="og:description" content="Browse the full Ishiraa collection. Buy via WhatsApp.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div data-site-header></div>
+
+  <section class="section section--tight">
+    <div class="container">
+      <div class="section-head" style="margin-bottom:2rem">
+        <span class="eyebrow">The Collection</span>
+        <h1 style="margin-bottom:.4rem">Shop</h1>
+        <p>Use the filters to find pieces by category, size, colour, or price.</p>
+      </div>
+
+      <button class="btn btn--ghost btn--sm filters-toggle" id="filtersToggle" style="display:none;margin-bottom:1rem" aria-expanded="false">Show filters</button>
+
+      <div class="shop">
+        <aside class="filters" id="filters">
+          <h3>Filters</h3>
+          <div class="filter-group">
+            <h4>Search</h4>
+            <input type="search" id="fSearch" placeholder="Name, code, keyword…" autocomplete="off">
+          </div>
+          <div class="filter-group">
+            <h4>Category</h4>
+            <div class="filter-chips" id="fCategory"></div>
+          </div>
+          <div class="filter-group">
+            <h4>Size</h4>
+            <div class="filter-chips" id="fSize"></div>
+          </div>
+          <div class="filter-group">
+            <h4>Colour</h4>
+            <div class="filter-chips" id="fColor"></div>
+          </div>
+          <div class="filter-group">
+            <h4>Price (₹)</h4>
+            <div class="price-range">
+              <input type="number" id="fMin" placeholder="Min" min="0">
+              <input type="number" id="fMax" placeholder="Max" min="0">
+            </div>
+          </div>
+          <div class="filter-group">
+            <h4>Availability</h4>
+            <div class="filter-chips" id="fAvail">
+              <button class="chip" data-value="in_stock">In stock</button>
+              <button class="chip" data-value="coming_soon">Coming soon</button>
+              <button class="chip" data-value="out_of_stock">Sold out</button>
+            </div>
+            <label class="checkbox" style="margin-top:.75rem">
+              <input type="checkbox" id="fNew"> New arrivals only
+            </label>
+          </div>
+          <button class="btn btn--ghost btn--sm btn--block filters__reset" id="fReset">Reset filters</button>
+        </aside>
+
+        <div class="shop__main">
+          <div class="shop__toolbar">
+            <span class="shop__count" id="count">Loading…</span>
+            <div class="shop__sort">
+              <label for="sort" style="margin:0;letter-spacing:.1em">Sort</label>
+              <select id="sort">
+                <option value="newest">Newest</option>
+                <option value="price_asc">Price — low to high</option>
+                <option value="price_desc">Price — high to low</option>
+                <option value="name">Name A–Z</option>
+              </select>
+            </div>
+          </div>
+          <div class="product-grid" id="grid" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div data-site-footer></div>
+
+  <script src="config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/whatsapp.js"></script>
+  <script src="js/products.js"></script>
+  <script>
+    (async () => {
+      const all = await IshiraaStore.load();
+      const state = { search:'', category:null, size:null, color:null, minPrice:null, maxPrice:null, availability:null, onlyNew:false, sort:'newest' };
+
+      // Populate chips
+      const makeChips = (mount, values) => {
+        mount.innerHTML = values.map(v => `<button class="chip" data-value="${v.replace(/"/g,'&quot;')}">${v}</button>`).join('');
+      };
+      makeChips(document.getElementById('fCategory'), IshiraaStore.getCategories());
+      makeChips(document.getElementById('fSize'),     IshiraaStore.getSizes());
+      makeChips(document.getElementById('fColor'),    IshiraaStore.getColors());
+
+      const grid = document.getElementById('grid');
+      const count = document.getElementById('count');
+
+      function render() {
+        const filtered = IshiraaProducts.applyFilters(all, state);
+        const sorted   = IshiraaProducts.applySort(filtered, state.sort);
+        count.textContent = `${sorted.length} ${sorted.length === 1 ? 'piece' : 'pieces'}`;
+        IshiraaProducts.renderGrid(grid, sorted);
+      }
+
+      // Search
+      document.getElementById('fSearch').addEventListener('input', (e) => { state.search = e.target.value; render(); });
+      // Price
+      document.getElementById('fMin').addEventListener('input', (e) => { state.minPrice = e.target.value ? +e.target.value : null; render(); });
+      document.getElementById('fMax').addEventListener('input', (e) => { state.maxPrice = e.target.value ? +e.target.value : null; render(); });
+      // New
+      document.getElementById('fNew').addEventListener('change', (e) => { state.onlyNew = e.target.checked; render(); });
+      // Sort
+      document.getElementById('sort').addEventListener('change', (e) => { state.sort = e.target.value; render(); });
+
+      // Chip groups — single-select, click same to clear
+      const wireChipGroup = (el, key) => {
+        el.addEventListener('click', (e) => {
+          const btn = e.target.closest('.chip'); if (!btn) return;
+          const value = btn.dataset.value;
+          const already = state[key] === value;
+          el.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+          if (!already) { btn.classList.add('active'); state[key] = value; } else { state[key] = null; }
+          render();
+        });
+      };
+      wireChipGroup(document.getElementById('fCategory'), 'category');
+      wireChipGroup(document.getElementById('fSize'),     'size');
+      wireChipGroup(document.getElementById('fColor'),    'color');
+      wireChipGroup(document.getElementById('fAvail'),    'availability');
+
+      // Reset
+      document.getElementById('fReset').addEventListener('click', () => {
+        Object.assign(state, { search:'', category:null, size:null, color:null, minPrice:null, maxPrice:null, availability:null, onlyNew:false, sort:'newest' });
+        document.getElementById('fSearch').value = '';
+        document.getElementById('fMin').value = '';
+        document.getElementById('fMax').value = '';
+        document.getElementById('fNew').checked = false;
+        document.getElementById('sort').value = 'newest';
+        document.querySelectorAll('.filter-chips .chip').forEach(c => c.classList.remove('active'));
+        render();
+      });
+
+      // Mobile filters toggle
+      const toggle = document.getElementById('filtersToggle');
+      const filters = document.getElementById('filters');
+      const mq = window.matchMedia('(max-width: 900px)');
+      const apply = () => {
+        if (mq.matches) {
+          toggle.style.display = 'inline-flex';
+          filters.hidden = true;
+          toggle.setAttribute('aria-expanded','false');
+          toggle.textContent = 'Show filters';
+        } else {
+          toggle.style.display = 'none';
+          filters.hidden = false;
+        }
+      };
+      apply();
+      mq.addEventListener('change', apply);
+      toggle.addEventListener('click', () => {
+        filters.hidden = !filters.hidden;
+        toggle.setAttribute('aria-expanded', String(!filters.hidden));
+        toggle.textContent = filters.hidden ? 'Show filters' : 'Hide filters';
+      });
+
+      // Deep-link via ?q= and ?category=
+      const params = new URLSearchParams(location.search);
+      if (params.get('q'))        { state.search = params.get('q'); document.getElementById('fSearch').value = state.search; }
+      if (params.get('category')) {
+        state.category = params.get('category');
+        const match = document.querySelector(`#fCategory .chip[data-value="${state.category}"]`);
+        if (match) match.classList.add('active');
+      }
+      if (params.get('new'))      { state.onlyNew = true; document.getElementById('fNew').checked = true; }
+
+      render();
+    })();
+  </script>
+</body>
+</html>

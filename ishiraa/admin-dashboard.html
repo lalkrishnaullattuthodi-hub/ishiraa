@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard — Ishiraa Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#fbf8f4">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='68' font-family='serif' font-size='64' text-anchor='middle' fill='%238b6f47'%3EI%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <a class="brand" href="index.html">I<span>shiraa</span></a>
+      <nav class="admin-nav">
+        <button class="active" data-view="overview">◆ Overview</button>
+        <button data-view="products">❋ Products</button>
+        <button data-view="data">⇅ Data</button>
+      </nav>
+      <div class="admin-sidebar__bottom">
+        <button id="logoutBtn">Sign out</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <div class="admin-header">
+        <div>
+          <h1 id="viewTitle">Overview</h1>
+          <p id="viewSub">Welcome back.</p>
+        </div>
+        <div id="headerActions"></div>
+      </div>
+
+      <!-- Overview -->
+      <section data-view="overview">
+        <div class="stat-grid">
+          <div class="stat-card"><div class="stat-card__label">Total products</div><div class="stat-card__value" id="statTotal">—</div></div>
+          <div class="stat-card"><div class="stat-card__label">In stock</div><div class="stat-card__value" id="statIn">—</div></div>
+          <div class="stat-card"><div class="stat-card__label">Out of stock</div><div class="stat-card__value" id="statOut">—</div></div>
+          <div class="stat-card"><div class="stat-card__label">Coming soon</div><div class="stat-card__value" id="statSoon">—</div></div>
+          <div class="stat-card"><div class="stat-card__label">New arrivals</div><div class="stat-card__value" id="statNew">—</div></div>
+        </div>
+
+        <div class="card" style="margin-bottom:1rem">
+          <h3 style="margin-top:0">Recently added</h3>
+          <div id="recentList"></div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-top:0">Out of stock</h3>
+          <div id="outList"></div>
+        </div>
+      </section>
+
+      <!-- Products list -->
+      <section data-view="products" hidden>
+        <div class="admin-toolbar">
+          <div class="left">
+            <input type="search" id="search" placeholder="Search by name, code, category…">
+            <select id="statusFilter">
+              <option value="">All statuses</option>
+              <option value="available">Available</option>
+              <option value="out_of_stock">Out of stock</option>
+              <option value="coming_soon">Coming soon</option>
+            </select>
+          </div>
+          <button class="btn btn--primary" id="addBtn">+ Add product</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="products-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>New</th>
+                <th style="text-align:right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Data mgmt -->
+      <section data-view="data" hidden>
+        <div class="card" style="margin-bottom:1rem">
+          <h3 style="margin-top:0">Export catalogue</h3>
+          <p>Download the full product catalogue as a JSON file — for backups, version control, or moving to a new device.</p>
+          <button class="btn btn--ghost" id="exportBtn">Download JSON</button>
+        </div>
+
+        <div class="card" style="margin-bottom:1rem">
+          <h3 style="margin-top:0">Import catalogue</h3>
+          <p>Replace the current catalogue from a JSON file. Products from <code>data/products.json</code> or a previous export both work.</p>
+          <input type="file" id="importFile" accept="application/json,.json">
+        </div>
+
+        <div class="card" style="margin-bottom:1rem">
+          <h3 style="margin-top:0">Write changes back to the bundled file</h3>
+          <p>After you've finished editing, copy the export below and paste it into <code>data/products.json</code> so the site serves the updated catalogue to first-time visitors.</p>
+          <textarea id="exportText" readonly style="min-height:240px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.82rem"></textarea>
+          <div style="margin-top:.5rem"><button class="btn btn--ghost btn--sm" id="copyBtn">Copy to clipboard</button></div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-top:0;color:var(--danger)">Danger zone</h3>
+          <p>Discard all localStorage data and reload the catalogue from the bundled <code>data/products.json</code>. Your edits will be lost unless you exported them.</p>
+          <button class="btn btn--danger" id="resetBtn">Reset to defaults</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Product drawer -->
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer__header">
+      <h2 id="drawerTitle">Add product</h2>
+      <button class="icon-btn" id="drawerClose" aria-label="Close">×</button>
+    </div>
+    <div class="drawer__body">
+      <form id="productForm" autocomplete="off">
+        <input type="hidden" id="pId">
+        <div class="form-row form-row--2">
+          <div>
+            <label for="pName">Name</label>
+            <input type="text" id="pName" required>
+          </div>
+          <div>
+            <label for="pCode">Code</label>
+            <input type="text" id="pCode" placeholder="ISH-XXX-001">
+          </div>
+        </div>
+        <div class="form-row form-row--2">
+          <div>
+            <label for="pCategory">Category</label>
+            <input type="text" id="pCategory" list="catList" placeholder="e.g. Kurta Sets">
+            <datalist id="catList"></datalist>
+          </div>
+          <div>
+            <label for="pPrice">Price (₹)</label>
+            <input type="number" id="pPrice" min="0" step="1" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label for="pDesc">Description</label>
+            <textarea id="pDesc"></textarea>
+          </div>
+        </div>
+        <div class="form-row form-row--2">
+          <div>
+            <label for="pSizes">Sizes (comma-separated)</label>
+            <input type="text" id="pSizes" placeholder="XS, S, M, L, XL">
+          </div>
+          <div>
+            <label for="pColors">Colours (comma-separated)</label>
+            <input type="text" id="pColors" placeholder="Ivory, Gold">
+          </div>
+        </div>
+        <div class="form-row form-row--2">
+          <div>
+            <label for="pStatus">Status</label>
+            <select id="pStatus">
+              <option value="available">Available</option>
+              <option value="out_of_stock">Out of stock</option>
+              <option value="coming_soon">Coming soon</option>
+            </select>
+          </div>
+          <div>
+            <label>Flags</label>
+            <label class="checkbox"><input type="checkbox" id="pIsNew"> New arrival</label><br>
+            <label class="checkbox"><input type="checkbox" id="pFeatured"> Featured</label>
+          </div>
+        </div>
+
+        <div style="margin-top:1rem">
+          <label>Images</label>
+          <div class="image-list" id="imgList"></div>
+          <div style="display:flex;gap:.5rem;margin-top:.5rem">
+            <button type="button" class="btn btn--ghost btn--sm" id="addImg">+ Add URL</button>
+            <label class="btn btn--ghost btn--sm" style="cursor:pointer;text-transform:none;letter-spacing:normal;font-weight:500;color:var(--ink)">
+              Upload file
+              <input type="file" id="uploadImg" accept="image/*" hidden multiple>
+            </label>
+          </div>
+          <p style="font-size:.78rem;color:var(--ink-muted);margin-top:.5rem">Prefer URLs — uploads are stored as base64 in the browser and can fill localStorage quickly.</p>
+        </div>
+      </form>
+    </div>
+    <div class="drawer__footer">
+      <button type="button" class="btn btn--ghost" id="drawerCancel">Cancel</button>
+      <button type="button" class="btn btn--primary" id="drawerSave">Save product</button>
+    </div>
+  </aside>
+
+  <script src="config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/whatsapp.js"></script>
+  <script src="js/admin.js"></script>
+  <script>
+    if (!IshiraaAdmin.requireAuth('admin.html')) { /* redirected */ }
+
+    const fmt = (n) => window.formatPrice ? window.formatPrice(n) : `₹${n}`;
+    const STATUS_TEXT = { available: 'Available', out_of_stock: 'Out of stock', coming_soon: 'Coming soon' };
+
+    // ---------- View switching ----------
+    document.querySelectorAll('.admin-nav button').forEach(btn => {
+      btn.addEventListener('click', () => switchView(btn.dataset.view));
+    });
+    function switchView(name) {
+      document.querySelectorAll('.admin-nav button').forEach(b => b.classList.toggle('active', b.dataset.view === name));
+      document.querySelectorAll('main > section[data-view]').forEach(s => s.hidden = s.dataset.view !== name);
+      const titles = { overview: ['Overview', 'Welcome back.'], products: ['Products', 'Add, edit, and remove pieces.'], data: ['Data', 'Export, import, or reset your catalogue.'] };
+      document.getElementById('viewTitle').textContent = titles[name][0];
+      document.getElementById('viewSub').textContent   = titles[name][1];
+    }
+
+    // ---------- Data load ----------
+    let products = [];
+    (async () => {
+      products = await IshiraaStore.load();
+      renderAll();
+    })();
+
+    function renderAll() {
+      renderOverview();
+      renderTable();
+      renderExportText();
+    }
+
+    // ---------- Overview ----------
+    function renderOverview() {
+      const total = products.length;
+      const inS   = products.filter(p => p.status === 'available').length;
+      const out   = products.filter(p => p.status === 'out_of_stock').length;
+      const soon  = products.filter(p => p.status === 'coming_soon').length;
+      const neww  = products.filter(p => p.isNew).length;
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statIn').textContent    = inS;
+      document.getElementById('statOut').textContent   = out;
+      document.getElementById('statSoon').textContent  = soon;
+      document.getElementById('statNew').textContent   = neww;
+
+      const recent = [...products]
+        .sort((a,b) => String(b.createdAt||'').localeCompare(String(a.createdAt||'')))
+        .slice(0, 5);
+      document.getElementById('recentList').innerHTML = recent.length
+        ? recent.map(p => `<div style="display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid var(--line)"><span>${escapeHTML(p.name)} <small style="color:var(--ink-muted)">${escapeHTML(p.category||'')}</small></span><span>${fmt(p.price)}</span></div>`).join('')
+        : `<p style="color:var(--ink-muted);margin:0">No products yet.</p>`;
+
+      const outList = products.filter(p => p.status === 'out_of_stock');
+      document.getElementById('outList').innerHTML = outList.length
+        ? outList.map(p => `<div style="display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid var(--line)"><span>${escapeHTML(p.name)}</span><span style="color:var(--ink-muted)">${escapeHTML(p.code||'')}</span></div>`).join('')
+        : `<p style="color:var(--ink-muted);margin:0">Nothing's out of stock. Nice.</p>`;
+    }
+
+    // ---------- Products table ----------
+    const searchInput = document.getElementById('search');
+    const statusFilter = document.getElementById('statusFilter');
+    searchInput.addEventListener('input', renderTable);
+    statusFilter.addEventListener('change', renderTable);
+
+    function renderTable() {
+      const q = searchInput.value.trim().toLowerCase();
+      const s = statusFilter.value;
+      const rows = products.filter(p => {
+        if (s && p.status !== s) return false;
+        if (!q) return true;
+        return `${p.name} ${p.code} ${p.category}`.toLowerCase().includes(q);
+      });
+      const tbody = document.getElementById('rows');
+      if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:3rem;color:var(--ink-muted)">No products match.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = rows.map(p => `
+        <tr data-id="${escapeAttr(p.id)}">
+          <td><img class="thumb" src="${escapeAttr((p.images||[])[0] || '')}" alt="" onerror="this.style.display='none'"></td>
+          <td>${escapeHTML(p.name)}</td>
+          <td style="color:var(--ink-muted)">${escapeHTML(p.code||'')}</td>
+          <td>${escapeHTML(p.category||'')}</td>
+          <td>${fmt(p.price)}</td>
+          <td><span class="status-pill status-pill--${p.status}">${STATUS_TEXT[p.status]||p.status}</span></td>
+          <td>${p.isNew ? '✓' : ''}</td>
+          <td><div class="row-actions">
+            <button class="icon-btn" data-action="edit" title="Edit">✎</button>
+            <button class="icon-btn icon-btn--danger" data-action="delete" title="Delete">🗑</button>
+          </div></td>
+        </tr>
+      `).join('');
+      tbody.querySelectorAll('[data-action]').forEach(btn => {
+        const id = btn.closest('tr').dataset.id;
+        btn.addEventListener('click', () => {
+          if (btn.dataset.action === 'edit') openDrawer(id);
+          if (btn.dataset.action === 'delete') handleDelete(id);
+        });
+      });
+    }
+
+    document.getElementById('addBtn').addEventListener('click', () => openDrawer(null));
+
+    function handleDelete(id) {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      if (!confirm(`Delete "${p.name}"? This cannot be undone.`)) return;
+      IshiraaStore.remove(id);
+      products = products.filter(x => x.id !== id);
+      renderAll();
+      showToast('Product deleted');
+    }
+
+    // ---------- Drawer / form ----------
+    const drawer = document.getElementById('drawer');
+    const backdrop = document.getElementById('drawerBackdrop');
+    function closeDrawer() {
+      drawer.classList.remove('open');
+      backdrop.classList.remove('open');
+      drawer.setAttribute('aria-hidden', 'true');
+    }
+    function openDrawer(id) {
+      const editing = !!id;
+      const p = editing ? products.find(x => x.id === id) : blankProduct();
+      document.getElementById('drawerTitle').textContent = editing ? 'Edit product' : 'Add product';
+      document.getElementById('pId').value       = p.id;
+      document.getElementById('pName').value     = p.name || '';
+      document.getElementById('pCode').value     = p.code || '';
+      document.getElementById('pCategory').value = p.category || '';
+      document.getElementById('pPrice').value    = p.price ?? '';
+      document.getElementById('pDesc').value     = p.description || '';
+      document.getElementById('pSizes').value    = (p.sizes || []).join(', ');
+      document.getElementById('pColors').value   = (p.colors || []).join(', ');
+      document.getElementById('pStatus').value   = p.status || 'available';
+      document.getElementById('pIsNew').checked    = !!p.isNew;
+      document.getElementById('pFeatured').checked = !!p.featured;
+
+      // Populate category datalist
+      const dl = document.getElementById('catList');
+      dl.innerHTML = IshiraaStore.getCategories().map(c => `<option value="${escapeAttr(c)}">`).join('');
+
+      // Images
+      renderImageList(p.images || []);
+
+      drawer.classList.add('open');
+      backdrop.classList.add('open');
+      drawer.setAttribute('aria-hidden', 'false');
+      document.getElementById('pName').focus();
+    }
+
+    function blankProduct() {
+      const id = 'ish-' + Math.random().toString(36).slice(2, 8);
+      return { id, name:'', code:'', category:'', price:0, description:'', sizes:[], colors:[], images:[], status:'available', isNew:false, featured:false, createdAt: new Date().toISOString().slice(0,10) };
+    }
+
+    document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+    document.getElementById('drawerCancel').addEventListener('click', closeDrawer);
+    backdrop.addEventListener('click', closeDrawer);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
+
+    document.getElementById('drawerSave').addEventListener('click', () => {
+      const id    = document.getElementById('pId').value;
+      const name  = document.getElementById('pName').value.trim();
+      const price = +document.getElementById('pPrice').value;
+      if (!name) { showToast('Name is required.'); return; }
+      if (isNaN(price) || price < 0) { showToast('Price must be a number ≥ 0.'); return; }
+      const existing = products.find(p => p.id === id);
+      const product = {
+        id,
+        name,
+        code:        document.getElementById('pCode').value.trim(),
+        category:    document.getElementById('pCategory').value.trim(),
+        price,
+        description: document.getElementById('pDesc').value.trim(),
+        sizes:       splitList(document.getElementById('pSizes').value),
+        colors:      splitList(document.getElementById('pColors').value),
+        images:      collectImages(),
+        status:      document.getElementById('pStatus').value,
+        isNew:       document.getElementById('pIsNew').checked,
+        featured:    document.getElementById('pFeatured').checked,
+        createdAt:   (existing && existing.createdAt) || new Date().toISOString().slice(0,10)
+      };
+      IshiraaStore.upsert(product);
+      products = IshiraaStore._cache; // store mutates in-place
+      renderAll();
+      closeDrawer();
+      showToast(existing ? 'Product updated' : 'Product added');
+    });
+
+    function splitList(s) {
+      return s.split(',').map(x => x.trim()).filter(Boolean);
+    }
+
+    // ---------- Image list ----------
+    const imgListEl = document.getElementById('imgList');
+    function renderImageList(urls) {
+      imgListEl.innerHTML = '';
+      (urls.length ? urls : ['']).forEach(url => addImageRow(url));
+    }
+    function addImageRow(url) {
+      const row = document.createElement('div');
+      row.className = 'image-list__row';
+      row.innerHTML = `
+        <img class="image-list__preview" src="${escapeAttr(url||'')}" alt="" onerror="this.style.visibility='hidden'">
+        <input type="url" placeholder="https://… (or leave blank)" value="${escapeAttr(url||'')}">
+        <button type="button" class="icon-btn icon-btn--danger" title="Remove">×</button>
+      `;
+      const input = row.querySelector('input');
+      const preview = row.querySelector('img');
+      input.addEventListener('input', () => { preview.src = input.value; preview.style.visibility = input.value ? 'visible' : 'hidden'; });
+      row.querySelector('button').addEventListener('click', () => row.remove());
+      imgListEl.appendChild(row);
+    }
+    function collectImages() {
+      return [...imgListEl.querySelectorAll('input')].map(i => i.value.trim()).filter(Boolean);
+    }
+    document.getElementById('addImg').addEventListener('click', () => addImageRow(''));
+    document.getElementById('uploadImg').addEventListener('change', async (e) => {
+      const files = [...e.target.files];
+      for (const f of files) {
+        if (f.size > 400 * 1024) {
+          showToast(`"${f.name}" is large — consider a URL instead.`);
+        }
+        const data = await fileToBase64(f);
+        addImageRow(data);
+      }
+      e.target.value = '';
+    });
+    function fileToBase64(f) {
+      return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(f); });
+    }
+
+    // ---------- Data tab ----------
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      const json = IshiraaStore.export();
+      const blob = new Blob([json], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `ishiraa-products-${new Date().toISOString().slice(0,10)}.json`;
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(a.href);
+    });
+    document.getElementById('importFile').addEventListener('change', async (e) => {
+      const f = e.target.files[0]; if (!f) return;
+      try {
+        const text = await f.text();
+        const n = IshiraaStore.importJSON(text);
+        products = IshiraaStore._cache;
+        renderAll();
+        showToast(`Imported ${n} products`);
+      } catch (err) {
+        alert('Import failed: ' + err.message);
+      }
+      e.target.value = '';
+    });
+    document.getElementById('copyBtn').addEventListener('click', async () => {
+      const txt = document.getElementById('exportText').value;
+      try { await navigator.clipboard.writeText(txt); showToast('Copied.'); }
+      catch { const ta = document.getElementById('exportText'); ta.select(); document.execCommand('copy'); showToast('Copied.'); }
+    });
+    document.getElementById('resetBtn').addEventListener('click', async () => {
+      if (!confirm('Reset all product data? Your unsaved edits will be lost.')) return;
+      IshiraaStore.reset();
+      products = await IshiraaStore.load();
+      renderAll();
+      showToast('Catalogue reset.');
+    });
+    function renderExportText() {
+      document.getElementById('exportText').value = IshiraaStore.export();
+    }
+
+    // ---------- Logout ----------
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      IshiraaAdmin.logout();
+      location.replace('admin.html');
+    });
+
+    // ---------- helpers ----------
+    function escapeHTML(s) { return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function escapeAttr(s) { return escapeHTML(s).replace(/"/g,'&quot;'); }
+  </script>
+</body>
+</html>

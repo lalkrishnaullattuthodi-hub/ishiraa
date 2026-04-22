@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ishiraa — Quiet luxury, woven with intention</title>
+  <meta name="description" content="Handcrafted contemporary clothing — kurtas, sarees, lehengas and co-ord sets. Shop by WhatsApp. Pan-India shipping.">
+  <meta name="theme-color" content="#fbf8f4">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='68' font-family='serif' font-size='64' text-anchor='middle' fill='%238b6f47'%3EI%3C/text%3E%3C/svg%3E">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Ishiraa — Quiet luxury, woven with intention">
+  <meta property="og:description" content="Handcrafted contemporary clothing — kurtas, sarees, lehengas and co-ord sets.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=60">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div data-site-header></div>
+
+  <section class="hero">
+    <div class="hero__inner">
+      <span class="eyebrow">Spring — Summer 2026</span>
+      <h1>Quiet luxury, woven with intention.</h1>
+      <p>Hand-loomed textiles, mindful silhouettes, and craft you can feel in every thread.</p>
+      <div class="hero__cta">
+        <a class="btn btn--primary" href="shop.html">Explore the Collection</a>
+        <a class="btn btn--ghost" href="about.html">Our Story</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="features">
+        <div class="feature">
+          <div class="feature__icon">◈</div>
+          <h4>Hand-crafted</h4>
+          <p>Every piece touched by artisans.</p>
+        </div>
+        <div class="feature">
+          <div class="feature__icon">✦</div>
+          <h4>Natural fabrics</h4>
+          <p>Chanderi, linen, khadi, mulmul.</p>
+        </div>
+        <div class="feature">
+          <div class="feature__icon">❋</div>
+          <h4>Made to last</h4>
+          <p>Designed for a slower wardrobe.</p>
+        </div>
+        <div class="feature">
+          <div class="feature__icon">♡</div>
+          <h4>WhatsApp ordering</h4>
+          <p>Personal, easy, human.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">New Arrivals</span>
+        <h2>Just in</h2>
+        <p>The latest to land in the studio — limited runs, take your time.</p>
+      </div>
+      <div class="product-grid" id="newArrivals" aria-live="polite"></div>
+      <div class="text-center mt-2">
+        <a class="btn btn--ghost" href="shop.html">See the full shop →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Signature Pieces</span>
+        <h2>Featured</h2>
+        <p>Editor's picks — silhouettes we keep reaching for.</p>
+      </div>
+      <div class="product-grid" id="featured" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container split">
+      <div class="split__media">
+        <img src="https://images.unsplash.com/photo-1617627143233-caf5a9b0f9c4?auto=format&fit=crop&w=900&q=70" alt="Hand-embroidered fabric detail">
+      </div>
+      <div>
+        <span class="eyebrow">The studio</span>
+        <h2>Made in small batches, by hands we know.</h2>
+        <p>Ishiraa works with a tight circle of weavers and embroiderers across Benaras, Lucknow, and the Kutch. Every piece carries the name of the person who made it — and a short note on the fabric it's cut from.</p>
+        <a class="btn btn--ghost" href="about.html">Read our story</a>
+      </div>
+    </div>
+  </section>
+
+  <div data-site-footer></div>
+
+  <script src="config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/whatsapp.js"></script>
+  <script src="js/products.js"></script>
+  <script>
+    (async () => {
+      const all = await IshiraaStore.load();
+      const newest = [...all].filter(p => p.isNew).sort((a,b) => String(b.createdAt).localeCompare(String(a.createdAt))).slice(0, 4);
+      const featured = all.filter(p => p.featured).slice(0, 4);
+      IshiraaProducts.renderGrid(document.getElementById('newArrivals'), newest.length ? newest : all.slice(0, 4));
+      IshiraaProducts.renderGrid(document.getElementById('featured'),    featured.length ? featured : all.slice(0, 4));
+    })();
+  </script>
+</body>
+</html>

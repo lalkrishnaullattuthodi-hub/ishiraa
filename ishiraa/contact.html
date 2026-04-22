@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact — Ishiraa</title>
+  <meta name="description" content="Reach Ishiraa on WhatsApp, email, or social. Customisations, enquiries, and studio visits.">
+  <meta name="theme-color" content="#fbf8f4">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='68' font-family='serif' font-size='64' text-anchor='middle' fill='%238b6f47'%3EI%3C/text%3E%3C/svg%3E">
+  <meta property="og:title" content="Contact — Ishiraa">
+  <meta property="og:description" content="Reach us on WhatsApp, email, or social.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div data-site-header></div>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Say hello</span>
+        <h1>Let's talk</h1>
+        <p>Have a question about sizing, fabric, or a custom piece? We'd love to hear from you.</p>
+      </div>
+
+      <div class="split">
+        <div>
+          <div class="card">
+            <h3>Write us a note</h3>
+            <p>Fill in your details and we'll send the message through to our WhatsApp.</p>
+            <form id="contactForm">
+              <div class="form-row form-row--2">
+                <div>
+                  <label for="cName">Name</label>
+                  <input type="text" id="cName" required>
+                </div>
+                <div>
+                  <label for="cEmail">Email (optional)</label>
+                  <input type="email" id="cEmail">
+                </div>
+              </div>
+              <div class="form-row">
+                <div>
+                  <label for="cMsg">Message</label>
+                  <textarea id="cMsg" required placeholder="Tell us what you're looking for…"></textarea>
+                </div>
+              </div>
+              <button class="btn btn--wa btn--block" type="submit">Send via WhatsApp</button>
+            </form>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <h3>Reach us directly</h3>
+            <p style="margin-bottom:.25rem"><strong>WhatsApp</strong></p>
+            <p id="cWA">—</p>
+            <p style="margin-bottom:.25rem"><strong>Email</strong></p>
+            <p id="cEmailOut">—</p>
+            <p style="margin-bottom:.25rem"><strong>Studio</strong></p>
+            <p id="cAddr">—</p>
+            <p style="margin-bottom:.25rem"><strong>Follow</strong></p>
+            <div class="footer-social" style="margin-top:.25rem" id="cSocial"></div>
+          </div>
+          <div class="card" style="margin-top:1rem">
+            <h3>Shipping & returns</h3>
+            <p id="cShip">Ships across India. International shipping on request. Seven-day exchange on all unworn pieces.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div data-site-footer></div>
+
+  <script src="config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/whatsapp.js"></script>
+  <script>
+    const c = window.ISHIRAA_CONFIG.contact;
+    document.getElementById('cWA').innerHTML       = `<a href="${IshiraaWA.generalLink()}" target="_blank" rel="noopener">${c.whatsappDisplay}</a>`;
+    document.getElementById('cEmailOut').innerHTML = `<a href="mailto:${c.email}">${c.email}</a>`;
+    document.getElementById('cAddr').textContent   = c.address || '';
+    const sc = document.getElementById('cSocial');
+    if (c.instagram) sc.insertAdjacentHTML('beforeend', `<a href="${c.instagram}" target="_blank" rel="noopener" aria-label="Instagram">IG</a>`);
+    if (c.facebook)  sc.insertAdjacentHTML('beforeend', `<a href="${c.facebook}"  target="_blank" rel="noopener" aria-label="Facebook">FB</a>`);
+    if (c.pinterest) sc.insertAdjacentHTML('beforeend', `<a href="${c.pinterest}" target="_blank" rel="noopener" aria-label="Pinterest">PIN</a>`);
+
+    document.getElementById('contactForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name  = document.getElementById('cName').value.trim();
+      const email = document.getElementById('cEmail').value.trim();
+      const msg   = document.getElementById('cMsg').value.trim();
+      const parts = [`Hi Ishiraa, I'm ${name}.`];
+      if (email) parts.push(`Email: ${email}`);
+      parts.push('', msg);
+      window.open(IshiraaWA.generalLink(parts.join('\n')), '_blank');
+      showToast('Opening WhatsApp…');
+    });
+  </script>
+</body>
+</html>

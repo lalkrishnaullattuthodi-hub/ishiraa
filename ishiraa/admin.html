@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin — Ishiraa</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#fbf8f4">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='68' font-family='serif' font-size='64' text-anchor='middle' fill='%238b6f47'%3EI%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+  <div class="login-shell">
+    <div class="login-card">
+      <a href="index.html" class="brand">I<span>shiraa</span></a>
+      <p>Studio admin access</p>
+      <form id="loginForm" autocomplete="off">
+        <div class="form-row">
+          <div>
+            <label for="pw">Password</label>
+            <input type="password" id="pw" required autofocus>
+          </div>
+        </div>
+        <label class="checkbox" style="margin-bottom:1rem">
+          <input type="checkbox" id="remember" checked> Keep me signed in
+        </label>
+        <button class="btn btn--primary btn--block" type="submit">Sign in</button>
+        <div class="login-error" id="err" role="alert"></div>
+      </form>
+      <p style="margin-top:1.5rem;font-size:.75rem;color:var(--ink-muted)">
+        ← <a href="index.html" style="text-decoration:underline">Back to store</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="js/admin.js"></script>
+  <script>
+    // If already signed in, jump straight to dashboard.
+    if (IshiraaAdmin.getSession()) location.replace('admin-dashboard.html');
+
+    const form = document.getElementById('loginForm');
+    const err  = document.getElementById('err');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      err.textContent = '';
+      const pw = document.getElementById('pw').value;
+      const remember = document.getElementById('remember').checked;
+      const ok = await IshiraaAdmin.login(pw, remember);
+      if (ok) location.replace('admin-dashboard.html');
+      else { err.textContent = 'Incorrect password.'; document.getElementById('pw').select(); }
+    });
+  </script>
+</body>
+</html>

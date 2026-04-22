@@ -1,0 +1,144 @@
+{
+  "version": 1,
+  "updatedAt": "2026-04-22",
+  "products": [
+    {
+      "id": "ish-001",
+      "code": "ISH-CHN-001",
+      "name": "Chanderi Ivory Kurta Set",
+      "category": "Kurta Sets",
+      "price": 6490,
+      "description": "Hand-loomed Chanderi silk kurta with delicate zari border, paired with tapered pants and an organza dupatta. A quiet classic for understated celebrations.",
+      "sizes": ["XS", "S", "M", "L", "XL"],
+      "colors": ["Ivory", "Gold"],
+      "images": [
+        "https://images.unsplash.com/photo-1583391733956-6c78276477e2?auto=format&fit=crop&w=1200&q=70",
+        "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=1200&q=70"
+      ],
+      "status": "available",
+      "isNew": true,
+      "featured": true,
+      "createdAt": "2026-04-15"
+    },
+    {
+      "id": "ish-002",
+      "code": "ISH-LIN-002",
+      "name": "Linen Drape Co-ord",
+      "category": "Co-ord Sets",
+      "price": 4890,
+      "description": "Breathable pure linen co-ord with a relaxed blouse and wide-leg trousers. Pre-washed for softness; develops character with every wear.",
+      "sizes": ["S", "M", "L", "XL"],
+      "colors": ["Sand", "Olive"],
+      "images": [
+        "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1200&q=70"
+      ],
+      "status": "available",
+      "isNew": true,
+      "featured": true,
+      "createdAt": "2026-04-10"
+    },
+    {
+      "id": "ish-003",
+      "code": "ISH-MUL-003",
+      "name": "Mulmul Block-Print Saree",
+      "category": "Sarees",
+      "price": 3790,
+      "description": "Six-yard soft mulmul cotton saree in hand block-printed florals. Weightless drape, everyday grace.",
+      "sizes": ["Free Size"],
+      "colors": ["Indigo", "Terracotta"],
+      "images": [
+        "https://images.unsplash.com/photo-1610030469668-8e4a7b1f1b1a?auto=format&fit=crop&w=1200&q=70",
+        "https://images.unsplash.com/photo-1617627191893-0d0a7e43b24e?auto=format&fit=crop&w=1200&q=70"
+      ],
+      "status": "available",
+      "isNew": false,
+      "featured": true,
+      "createdAt": "2026-03-20"
+    },
+    {
+      "id": "ish-004",
+      "code": "ISH-TUN-004",
+      "name": "Hand-embroidered Tunic",
+      "category": "Tunics",
+      "price": 2890,
+      "description": "Airy cotton tunic with chikankari detailing at the yoke and cuffs. Pairs with denims, dhotis, or palazzos.",
+      "sizes": ["XS", "S", "M", "L"],
+      "colors": ["White", "Powder Blue"],
+      "images": [
+        "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=1200&q=70"
+      ],
+      "status": "out_of_stock",
+      "isNew": false,
+      "featured": false,
+      "createdAt": "2026-02-12"
+    },
+    {
+      "id": "ish-005",
+      "code": "ISH-LHG-005",
+      "name": "Festive Lehenga — Rose Gold",
+      "category": "Lehengas",
+      "price": 18900,
+      "description": "Raw silk lehenga with hand-embroidered dori work, paired with a corset blouse and tulle dupatta. Made to order in four weeks.",
+      "sizes": ["XS", "S", "M", "L", "XL"],
+      "colors": ["Rose Gold"],
+      "images": [
+        "https://images.unsplash.com/photo-1617059062026-fca1ff88a2d4?auto=format&fit=crop&w=1200&q=70"
+      ],
+      "status": "coming_soon",
+      "isNew": true,
+      "featured": true,
+      "createdAt": "2026-04-18"
+    },
+    {
+      "id": "ish-006",
+      "code": "ISH-DUP-006",
+      "name": "Banarasi Silk Dupatta",
+      "category": "Accessories",
+      "price": 2490,
+      "description": "Pure Banarasi silk dupatta with meenakari buttis — the finishing note that transforms any outfit.",
+      "sizes": ["Free Size"],
+      "colors": ["Emerald", "Ruby", "Navy"],
+      "images": [
+        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1200&q=70"
+      ],
+      "status": "available",
+      "isNew": false,
+      "featured": false,
+      "createdAt": "2026-01-28"
+    },
+    {
+      "id": "ish-007",
+      "code": "ISH-KRT-007",
+      "name": "Everyday Khadi Kurta",
+      "category": "Kurtas",
+      "price": 1890,
+      "description": "Slim-fit khadi kurta with wooden buttons. Gets better with every wash.",
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "colors": ["Natural", "Charcoal", "Rust"],
+      "images": [
+        "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=1200&q=70"
+      ],
+      "status": "available",
+      "isNew": false,
+      "featured": false,
+      "createdAt": "2026-03-05"
+    },
+    {
+      "id": "ish-008",
+      "code": "ISH-ANK-008",
+      "name": "Ankle-length Anarkali",
+      "category": "Anarkalis",
+      "price": 7890,
+      "description": "Georgette anarkali with threadwork bodice and a flowing skirt. A silhouette that moves with you.",
+      "sizes": ["XS", "S", "M", "L"],
+      "colors": ["Pistachio", "Black"],
+      "images": [
+        "https://images.unsplash.com/photo-1603189343302-e603f7add05a?auto=format&fit=crop&w=1200&q=70"
+      ],
+      "status": "available",
+      "isNew": true,
+      "featured": false,
+      "createdAt": "2026-04-02"
+    }
+  ]
+}
